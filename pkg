@@ -3,49 +3,39 @@
 # An attemp to make a unified interface for different 
 # package managers, including pacman, apt, dnf, xbps
 #
-# TODO: pkg.conf maybe
+# TODO: pkg.conf
 # TODO: use file descriptor (fd) for reading different distro files
+# TODO: set the package manager backend (and distro) only once
+#
+
+CURDIR="$(dirname $0)"
+INCDIR="$CURDIR/include"
 
 function usage() {
     echo "usage"
 }
 
-function query_distro() {
+function package_manager() {
     file="/etc/os-release"
-
     [ -f $file ] && distro=$(cat $file | grep -w "ID" | cut -d '=' -f 2) || distro="None"
+
+    [ "$distro" = "manjaro" ] && echo "pacman"
+
 }
 
-function update_mirrors() {
-    echo "updating mirrors"
+function source_file() {
+    PKGMGR="$(package_manager)"
+
+    [ "$PKGMGR" = "pacman" ] && source "$INCDIR/pacman.sh"
 }
 
-function upgrade_system() {
-    echo "upgrading system"
-}
-
-function query_package() {
-    echo "querying package"
-}
-
-function make_package() {
-    echo "making package"
-}
-
-function remove_package() {
-    echo "removing package"
-}
-
-function purge_package() {
-    echo "purging package"
-}
 
 function main() {
-    # if no argument is given, synchronize the mirrors with the remote
-    #[ -z "$1" ] && update_mirrors
+    # source the relevant backend commands
+    source_file
 
     case "$1" in
-         "" | "update")
+         "update" | "")
             update_mirrors
             ;;
         "upgrade")
@@ -67,7 +57,6 @@ function main() {
             usage
             ;;
     esac
-
 }
 
 main $@
