@@ -7,6 +7,8 @@
 # TODO: use file descriptor (fd) for reading different distro files
 # TODO: set the package manager backend (and distro) only once
 # TODO: a utility to combine the relevant files into one script
+# TODO: a better way for detecting package manager
+# TODO: pass backend specific args from frontend to backend
 #
 
 CURDIR="$(dirname $0)"
@@ -25,7 +27,6 @@ function package_manager() {
 
 function source_file() {
     PKGMGR="$(package_manager)"
-
     [ "$PKGMGR" = "pacman" ] && source "$INCDIR/pacman.sh"
 }
 
