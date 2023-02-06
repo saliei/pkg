@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+#
+# An attemp to make a unified interface for different 
+# package managers, including pacman, apt, dnf, xbps
+#
+# TODO: pkg.conf maybe
+# TODO: use file descriptor (fd) for reading different distro files
+
+function usage() {
+    echo "usage"
+}
+
+function query_distro() {
+    file="/etc/os-release"
+
+    [ -f $file ] && distro=$(cat $file | grep -w "ID" | cut -d '=' -f 2) || distro="None"
+}
+
+function update_mirrors() {
+    echo "updating mirrors"
+}
+
+function upgrade_system() {
+    echo "upgrading system"
+}
+
+function query_package() {
+    echo "querying package"
+}
+
+function make_package() {
+    echo "making package"
+}
+
+function remove_package() {
+    echo "removing package"
+}
+
+function purge_package() {
+    echo "purging package"
+}
+
+function main() {
+    # if no argument is given, synchronize the mirrors with the remote
+    #[ -z "$1" ] && update_mirrors
+
+    case "$1" in
+         "" | "update")
+            update_mirrors
+            ;;
+        "upgrade")
+            upgrade_system
+            ;;
+        "query")
+            query_package
+            ;;
+        "make")
+            make_package
+            ;;
+        "remove")
+            remove_package
+            ;;
+        "purge")
+            purge_package
+            ;;
+        *)
+            usage
+            ;;
+    esac
+
+}
+
+main $@
+
+
+
