@@ -6,6 +6,7 @@
 # TODO: pkg.conf
 # TODO: use file descriptor (fd) for reading different distro files
 # TODO: set the package manager backend (and distro) only once
+# TODO: a utility to combine the relevant files into one script
 #
 
 CURDIR="$(dirname $0)"
@@ -20,7 +21,6 @@ function package_manager() {
     [ -f $file ] && distro=$(cat $file | grep -w "ID" | cut -d '=' -f 2) || distro="None"
 
     [ "$distro" = "manjaro" ] && echo "pacman"
-
 }
 
 function source_file() {
@@ -29,29 +29,28 @@ function source_file() {
     [ "$PKGMGR" = "pacman" ] && source "$INCDIR/pacman.sh"
 }
 
-
 function main() {
     # source the relevant backend commands
     source_file
 
     case "$1" in
-         "update" | "")
-            update_mirrors
+         "update" | "-s" | "")
+            sync_mirrors
             ;;
-        "upgrade")
+        "upgrade" | "-u")
             upgrade_system
             ;;
-        "query")
-            query_package
+        "query" | "-q")
+            query_package $2
             ;;
-        "make")
-            make_package
+        "make" | "-m")
+            make_package $2
             ;;
-        "remove")
-            remove_package
+        "remove" | "-r")
+            remove_package $2
             ;;
-        "purge")
-            purge_package
+        "purge" | "-p")
+            purge_package $2
             ;;
         *)
             usage
@@ -60,6 +59,4 @@ function main() {
 }
 
 main $@
-
-
 
