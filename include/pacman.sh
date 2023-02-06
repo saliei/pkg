@@ -1,11 +1,14 @@
 # pacman specific operations
 
+# if there is yay use it instead of pacman
+type yay &>/dev/null && PKGCMD="yay" || PKGCMD="pacman"
+
 function sync_mirrors() {
-    yay -S
+    echo "yay -Sy"
 }
 
 function upgrade_system() {
-    yay -Syu
+    echo "yay -Syu"
 }
 
 function query_package() {
