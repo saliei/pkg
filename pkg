@@ -9,6 +9,7 @@
 # TODO: a utility to combine the relevant files into one script
 # TODO: a better way for detecting package manager
 # TODO: pass backend specific args from frontend to backend
+# TODO: use of getopt for parsing args
 #
 
 CURDIR="$(dirname $0)"
@@ -42,16 +43,20 @@ function main() {
             upgrade_system
             ;;
         "query" | "-q")
-            query_package $2
+            shift
+            query_package "$@"
             ;;
         "make" | "-m")
-            make_package $2
+            shift
+            make_package "$@"
             ;;
         "remove" | "-r")
-            remove_package $2
+            shift
+            remove_package "$@"
             ;;
         "purge" | "-p")
-            purge_package $2
+            shift
+            purge_package "$@"
             ;;
         *)
             usage
@@ -59,5 +64,5 @@ function main() {
     esac
 }
 
-main $@
+main "$@"
 

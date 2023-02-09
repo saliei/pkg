@@ -3,30 +3,47 @@
 # if there is yay use it instead of pacman
 type yay &>/dev/null && PKGCMD="yay" || PKGCMD="pacman"
 
+function query_usage() {
+    echo "query usage"
+}
+
 function sync_mirrors() {
-    echo "yay -Sy"
+    "$PKGCMD" -Sy
 }
 
 function upgrade_system() {
-    echo "yay -Syu"
+    "$PKGCMD" -Syu
 }
 
 function query_package() {
-    echo $1
-    echo "yay -Qi $1"
+    case "$1" in
+        "local" | "-l")
+            shift
+            "$PKGCMD" -Ss "$@"
+            ;;
+        "remote" | "-r")
+            shift
+            "$PKGCMD" -Ss "$@"
+            ;;
+        "all" | "-a")
+            # TODO: make this option the default one
+            shift
+            "$PKGCMD" -Ss "$@"
+            ;;
+        *)
+            query_usage
+            ;;
+    esac
 }
 
 function make_package() {
-    echo $1
-    echo "makepkg -si $1"
+    makepkg -si "$1"
 }
 
 function remove_package() {
-    echo $1
-    echo "yay -R $1"
+    "$PKGCMD" -R "$1"
 }
 
 function purge_package() {
-    echo $1
-    echo "yay -Rcns $1"
+    "$PKGCMD" -Rcns "$1"
 }
