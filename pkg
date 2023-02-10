@@ -10,13 +10,20 @@
 # TODO: a better way for detecting package manager
 # TODO: pass backend specific args from frontend to backend
 # TODO: use of getopt for parsing args
+# TODO: after first detection of package manager, 
+# change this script to set the package manager globally,
+# to avoid detection in every run
 #
 
 CURDIR="$(dirname $0)"
 INCDIR="$CURDIR/include"
 
-function usage() {
-    echo "usage"
+function usage_message() {
+    echo "usage message"
+}
+
+function help_message() {
+    echo "help message"
 }
 
 function package_manager() {
@@ -36,30 +43,34 @@ function main() {
     source_file
 
     case "$1" in
-         "update" | "-s" | "")
+         "--update" | "-s" | "")
             sync_mirrors
             ;;
-        "upgrade" | "-u")
+        "--upgrade" | "-u")
             upgrade_system
             ;;
-        "query" | "-q")
+        "--query" | "-q")
             shift
             query_package "$@"
             ;;
-        "make" | "-m")
+        "--make" | "-m")
             shift
             make_package "$@"
             ;;
-        "remove" | "-r")
+        "--remove" | "-r")
             shift
             remove_package "$@"
             ;;
-        "purge" | "-p")
+        "--purge" | "-p")
             shift
             purge_package "$@"
             ;;
+        "--help" | "-h")
+            shift
+            help_message
+            ;;
         *)
-            usage
+            usage_message
             ;;
     esac
 }
