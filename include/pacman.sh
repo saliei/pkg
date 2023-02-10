@@ -4,7 +4,7 @@
 type yay &>/dev/null && PKGCMD="yay" || PKGCMD="pacman"
 
 function query_usage() {
-    echo "query usage"
+    echo "query usage message"
 }
 
 function sync_mirrors() {
