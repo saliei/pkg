@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 #
-# An attemp to make a unified interface for different 
-# package managers, including pacman, apt, dnf, xbps
+# An attemp to make a unified interface for different package managers.
 #
 # TODO: pkg.conf
 # TODO: use file descriptor (fd) for reading different distro files
-# TODO: set the package manager backend (and distro) only once
-# TODO: a utility to combine the relevant files into one script
+# TODO: set the package manager backend (and distro) only once, also a CL arg to set it --set-pkgmgr
+# TODO: a utility to combine the relevant files into one minimal script
 # TODO: a better way for detecting package manager
 # TODO: pass backend specific args from frontend to backend
 # TODO: use of getopt for parsing args
@@ -17,6 +16,7 @@
 
 CURDIR="$(dirname $0)"
 INCDIR="$CURDIR/include"
+source "$INCDIR/pacman.sh"
 
 function usage_message() {
     echo "usage message"
@@ -26,22 +26,22 @@ function help_message() {
     echo "help message"
 }
 
-function package_manager() {
+function set_package_manager() {
+    echo "setting package manager to $1"
+}
+
+function detect_package_manager() {
     file="/etc/os-release"
     [ -f $file ] && distro=$(cat $file | grep -w "ID" | cut -d '=' -f 2) || distro="None"
-
     [ "$distro" = "manjaro" ] && echo "pacman"
 }
 
 function source_file() {
-    PKGMGR="$(package_manager)"
+    PKGMGR="$(detect_package_manager)"
     [ "$PKGMGR" = "pacman" ] && source "$INCDIR/pacman.sh"
 }
 
 function main() {
-    # source the relevant backend commands
-    source_file
-
     case "$1" in
          "--update" | "-s" | "")
             sync_mirrors
@@ -64,6 +64,10 @@ function main() {
         "--purge" | "-p")
             shift
             purge_package "$@"
+            ;;
+        "--set-pkgmgr")
+            shift
+            set_package_manager "$@"
             ;;
         "--help" | "-h")
             shift
