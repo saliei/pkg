@@ -1,4 +1,5 @@
 # pacman specific operations
+# TODO: test to see if even pacman exists!
 
 # if there is yay use it instead of pacman
 type yay &>/dev/null && PKGCMD="yay" || PKGCMD="pacman"
